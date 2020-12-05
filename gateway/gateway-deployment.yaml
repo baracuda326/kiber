@@ -1,0 +1,38 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gateway
+spec:
+  selector:
+    app: gateway
+  ports:
+    - protocol: TCP
+      port: 8081
+      nodePort: 30001
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  selector:
+    matchLabels:
+      app: gateway
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      dnsPolicy: Default
+      containers:
+        - env:
+            - name: MONGODB_ATLAS
+              value: mongodb+srv://Apartments:Apartments2020@apartment-cluster-ppfbg.mongodb.net/kuber?retryWrites=true&w=majority
+        - name: gateway
+          image: 8426024/gateway
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always

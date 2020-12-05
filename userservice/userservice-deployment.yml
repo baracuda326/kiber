@@ -1,0 +1,33 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: userservice
+spec:
+  selector:
+    app: userservice
+  ports:
+    - protocol: TCP
+      port: 8081
+      nodePort: 30002
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userservice
+spec:
+  selector:
+    matchLabels:
+      app: userservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: userservice
+    spec:
+      containers:
+        - name: userservice
+          image: userservice
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
